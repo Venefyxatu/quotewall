@@ -1,0 +1,81 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <title>wall of {f,sh}ame</title>
+
+    <link rel="stylesheet" href="quotes.css" type="text/css" media="screen" charset="utf-8">
+
+    <script src="jquery-2.0.3.js"></script>
+    <script src="jquery.csv-0.71.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+        function shuffle(list) {
+          // Nabbed from http://dtm.livejournal.com/38725.html
+          var i, j, t;
+          for (i = 1; i < list.length; i++) {
+            j = Math.floor(Math.random()*(1+i));  // choose j in [0..i]
+            if (j != i) {
+              t = list[i];                        // swap list[i] and list[j]
+              list[i] = list[j];
+              list[j] = t;
+            }
+          }
+        }
+        
+        $(document).ready(function() {
+            $.get('quotes.csv', 
+                function(data) {
+                    var readquotes = $.csv.toArrays(data);
+                    var quotes = [];
+                    var nodes = [];
+                    for (var x=0; x<readquotes.length; x++) {
+                        var li = document.createElement('li');
+
+                        var quotee = readquotes[x][1]
+                        if (typeof quotee != "undefined") {
+                            var quote = readquotes[x][0] + ' - ' + quotee;
+                        } else {
+                            var quote = readquotes[x][0];
+                        }
+                        var quoteparts = quote.split('\\n');
+                        for (var s=0; s<quoteparts.length; s++) {
+                            var p = document.createElement('p');
+                            var txt = document.createTextNode(quoteparts[s]);
+                            p.appendChild(txt);
+                            li.appendChild(p);
+                        }
+                        nodes.push(li);
+                        quotes.push(quote);
+                    }
+                    shuffle(nodes);
+                    $("#quotes").append(nodes);
+                    $("#quotes li").addClass("quote");
+                    var spotlight = Math.floor(Math.random() * nodes.length);
+                    var childidx = spotlight + 1;
+                    $("#quotes li:nth-child(" + childidx + ")").addClass("quote-spotlight");
+                    var html = $("#quotes li:nth-child(" + childidx + ")").html();
+                    $("#spotlight").append(html);
+                });
+        });
+    </script>
+    
+</head>
+
+<body>
+
+    <div class="pagetitle">
+        <h1>wall of {f,sh}ame</h1>
+    </div>
+
+    <div class="fixed">
+        <div class="spotlight-title">Spotlight</div>
+        <div id="spotlight" class="spotlight-quote"></div>
+    </div>
+
+    <div class="allquotes">
+        <ul id="quotes" class="quotes">
+    </div>
+    
+</body>
+</html>
