@@ -27,7 +27,7 @@
         $(document).ready(function() {
             $.get('quotes.csv', 
                 function(data) {
-                    var readquotes = $.csv.toArrays(data);
+                    var readquotes = $.csv.toArrays(data, {'separator': ';'});
                     var quotes = [];
                     var nodes = [];
                     for (var x=0; x<readquotes.length; x++) {
